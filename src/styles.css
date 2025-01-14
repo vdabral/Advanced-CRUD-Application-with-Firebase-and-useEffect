@@ -1,0 +1,149 @@
+/* styles.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+body {
+  background-color: #f4f7fa;
+  padding: 20px;
+}
+
+.task-manager {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2.5em;
+  color: #333;
+}
+
+.add-task {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.add-task input {
+  width: 80%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.add-task button {
+  width: 15%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-task button:hover {
+  background-color: #45a049;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 30px;
+}
+
+.status-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 30%;
+  text-align: center;
+  position: relative;
+}
+
+.status-card h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.status-card p {
+  font-size: 2em;
+  color: #333;
+}
+
+.status-card:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease;
+}
+
+.task-list {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  background-color: #f9f9f9;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  display: none;
+}
+
+.status-card:hover .task-list {
+  display: block;
+}
+
+.task-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.task-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 48%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-card input {
+  width: 70%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.task-card button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.task-card button:hover {
+  background-color: #c0392b;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+  }
+
+  .task-cards {
+    flex-direction: column;
+  }
+
+  .task-card {
+    width: 100%;
+  }
+}
