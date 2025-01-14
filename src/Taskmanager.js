@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { db, ref, set, push, onValue, remove, update } from './firebase'; // Import the necessary Firebase functions
+import { db, dbRef, push, set, onValue, update, ref } from "./firebase"; // Import Firebase methods
 
-const TaskManager = () => {
-  const [tasks, setTasks] = useState([]);
+function TaskManager() {
   const [newTask, setNewTask] = useState("");
-  const [taskStatus, setTaskStatus] = useState({
-    notStarted: 0,
-    ongoing: 0,
-    completed: 0,
-  });
+  const [tasks, setTasks] = useState([]);
+  const [taskStatus, setTaskStatus] = useState({ completed: 0, ongoing: 0, notStarted: 0 });
 
-  const dbRef = ref(db, "tasks/");
-
-  // Fetch tasks from Firebase
+  // Fetch tasks from Firebase and update task statuses
   useEffect(() => {
     const unsubscribe = onValue(dbRef, (snapshot) => {
       const data = snapshot.val();
@@ -29,35 +23,69 @@ const TaskManager = () => {
     });
 
     return () => unsubscribe();
-  }, [dbRef]);  // Include dbRef here to resolve the warning
+  }, []); // Remove dbRef from the dependency array
 
-  // Add new task to Firebase
+  // Add a new task to Firebase
   const addTask = () => {
     if (newTask.trim() !== "") {
       const taskRef = push(dbRef); // Create a new reference for a new task
       set(taskRef, {
         name: newTask,
         status: "not-started", // Default status for a new task
-      }).then(() => {
-        setNewTask(""); // Clear input field after adding task
-      }).catch((error) => {
-        console.error("Error adding task:", error);
-      });
+      })
+        .then(() => {
+          setNewTask(""); // Clear input field after adding task
+        })
+        .catch((error) => {
+          console.error("Error adding task:", error);
+          alert("Failed to add task: " + error.message);
+        });
     } else {
       alert("Please enter a task name.");
     }
   };
 
-  // Edit task name in Firebase
-  const editTask = (id, newName) => {
-    const taskRef = ref(db, `tasks/${id}`);
-    update(taskRef, { name: newName });
+  // Update task status (Completed, Ongoing, Not Started)
+  const updateStatus = (taskId, newStatus) => {
+    const taskRef = ref(db, `tasks/${taskId}`);
+    update(taskRef, {
+      status: newStatus,
+    })
+      .then(() => {
+        console.log(`Task status updated to ${newStatus}`);
+      })
+      .catch((error) => {
+        console.error("Error updating status:", error);
+      });
   };
 
-  // Delete task from Firebase
-  const deleteTask = (id) => {
-    const taskRef = ref(db, `tasks/${id}`);
-    remove(taskRef);
+  // Edit task name
+  const editTask = (taskId, newName) => {
+    const taskRef = ref(db, `tasks/${taskId}`);
+    update(taskRef, {
+      name: newName,
+    })
+      .then(() => {
+        console.log(`Task name updated`);
+      })
+      .catch((error) => {
+        console.error("Error updating task name:", error);
+      });
+  };
+
+  // Delete a task
+  const deleteTask = (taskId) => {
+    const taskRef = ref(db, `tasks/${taskId}`);
+    update(taskRef, {
+      name: null,
+      status: null,
+    })
+      .then(() => {
+        console.log("Task deleted");
+      })
+      .catch((error) => {
+        console.error("Error deleting task:", error);
+      });
   };
 
   return (
@@ -75,7 +103,7 @@ const TaskManager = () => {
         <button onClick={addTask}>Add Task</button>
       </div>
 
-      {/* Navbar showing task counts */}
+      {/* Navbar with task count and status */}
       <div className="navbar">
         <div className="status-card">
           <h3>Not Started</h3>
@@ -112,7 +140,7 @@ const TaskManager = () => {
         </div>
       </div>
 
-      {/* List of tasks with options to edit or delete */}
+      {/* Task list */}
       <div className="task-cards">
         {tasks.map((task) => (
           <div key={task.id} className="task-card">
@@ -121,12 +149,21 @@ const TaskManager = () => {
               value={task.name}
               onChange={(e) => editTask(task.id, e.target.value)}
             />
+            <button onClick={() => updateStatus(task.id, "completed")}>
+              Mark as Completed
+            </button>
+            <button onClick={() => updateStatus(task.id, "ongoing")}>
+              Mark as Ongoing
+            </button>
+            <button onClick={() => updateStatus(task.id, "not-started")}>
+              Mark as Not Started
+            </button>
             <button onClick={() => deleteTask(task.id)}>Delete</button>
           </div>
         ))}
       </div>
     </div>
   );
-};
+}
 
 export default TaskManager;

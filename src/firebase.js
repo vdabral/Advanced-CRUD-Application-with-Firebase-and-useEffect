@@ -1,8 +1,7 @@
-// Import necessary functions from Firebase SDK
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, push, onValue, remove, update } from "firebase/database"; // Import Realtime Database functions
+import { getDatabase, ref, set, push, onValue, update } from "firebase/database";
 
-// Your web app's Firebase configuration
+// Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAGuRCuMYSsgNtKKyhc0Hqul1B5omMPuQc",
   authDomain: "crud-application-28173.firebaseapp.com",
@@ -15,8 +14,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize Realtime Database
 const db = getDatabase(app);
+const dbRef = ref(db, 'tasks');
 
-export { db, ref, set, push, onValue, remove, update };
+export { db, dbRef, push, set, onValue, update, ref };
